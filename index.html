@@ -6,46 +6,68 @@
     <title>Yusri Zulkornain — Visual Portfolio</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,500;1,400&family=Montserrat:wght@600;700;800&family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700;800&family=Poppins:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
     <style>
         /* ======================================================================
-           Design Tokens & Editorial Magazine Print Theme (Light & Dark)
+           Design Tokens & Minimalist Glassmorphism Theme (Light & Dark)
            ====================================================================== */
         :root {
-            --bg: #faf8f4;
-            --paper: #ffffff;
-            --paper-alt: #f3efe7;
-            --ink: #111111;
-            --muted: #57534e;
-            --rule: #111111;
-            --rule-subtle: #dcd6ca;
-            --accent: #111111;
-            --accent-text: #faf8f4;
-            --editorial-red: #9e2a2b;
+            --bg: #f3f5f8;
+            --orb-1: rgba(148, 163, 184, 0.24);
+            --orb-2: rgba(203, 213, 225, 0.34);
+            --orb-3: rgba(186, 200, 218, 0.22);
+            --glass: rgba(255, 255, 255, 0.66);
+            --glass-hover: rgba(255, 255, 255, 0.84);
+            --glass-subtle: rgba(255, 255, 255, 0.46);
+            --glass-header: rgba(243, 245, 248, 0.72);
+            --glass-border: rgba(15, 23, 42, 0.08);
+            --glass-border-hover: rgba(15, 23, 42, 0.16);
+            --glass-highlight: rgba(255, 255, 255, 0.88);
+            --glass-shadow: 0 10px 30px -10px rgba(15, 23, 42, 0.07);
+            --glass-shadow-hover: 0 18px 38px -12px rgba(15, 23, 42, 0.12);
+            --ink: #0f172a;
+            --muted: #525d6e;
+            --rule: rgba(15, 23, 42, 0.12);
+            --rule-subtle: rgba(15, 23, 42, 0.07);
+            --accent: #0f172a;
+            --accent-text: #f8fafc;
+            --editorial-red: #334155;
             --whatsapp: #18794e;
             --whatsapp-hover: #125e3c;
-            --radius: 0px;
+            --radius: 16px;
+            --radius-sm: 10px;
+            --blur: blur(18px) saturate(150%);
         }
 
         @media (prefers-color-scheme: dark) {
             :root {
-                --bg: #121110;
-                --paper: #191816;
-                --paper-alt: #211f1c;
-                --ink: #f4f1ea;
-                --muted: #a8a29e;
-                --rule: #e7e2d8;
-                --rule-subtle: #33302b;
-                --accent: #f4f1ea;
-                --accent-text: #121110;
-                --editorial-red: #e06d6e;
+                --bg: #111111;
+                --orb-1: rgba(58, 58, 58, 0.22);
+                --orb-2: rgba(38, 38, 38, 0.34);
+                --orb-3: rgba(72, 72, 72, 0.16);
+                --glass: rgba(24, 24, 24, 0.68);
+                --glass-hover: rgba(34, 34, 34, 0.82);
+                --glass-subtle: rgba(255, 255, 255, 0.04);
+                --glass-header: rgba(17, 17, 17, 0.78);
+                --glass-border: rgba(255, 255, 255, 0.09);
+                --glass-border-hover: rgba(255, 255, 255, 0.18);
+                --glass-highlight: rgba(255, 255, 255, 0.08);
+                --glass-shadow: 0 12px 32px -10px rgba(0, 0, 0, 0.55);
+                --glass-shadow-hover: 0 20px 42px -12px rgba(0, 0, 0, 0.72);
+                --ink: #f2f2f2;
+                --muted: #9a9a9a;
+                --rule: rgba(255, 255, 255, 0.14);
+                --rule-subtle: rgba(255, 255, 255, 0.07);
+                --accent: #f2f2f2;
+                --accent-text: #111111;
+                --editorial-red: #d4d4d4;
                 --whatsapp: #229a63;
                 --whatsapp-hover: #1b7f51;
             }
         }
 
         /* ======================================================================
-           Base & Editorial Typography (Montserrat + Lora + Poppins)
+           Base & Typography (Montserrat + Poppins)
            ====================================================================== */
         *, *::before, *::after {
             box-sizing: border-box;
@@ -59,8 +81,13 @@
             margin: 0;
             min-height: 100vh;
             background-color: var(--bg);
+            background-image:
+                radial-gradient(circle at 12% 8%, var(--orb-1) 0%, transparent 42%),
+                radial-gradient(circle at 86% 24%, var(--orb-2) 0%, transparent 46%),
+                radial-gradient(circle at 48% 82%, var(--orb-3) 0%, transparent 50%);
+            background-attachment: fixed;
             color: var(--ink);
-            font-family: 'Lora', Georgia, serif;
+            font-family: 'Poppins', sans-serif;
             font-size: 15px;
             line-height: 1.55;
             -webkit-font-smoothing: antialiased;
@@ -98,14 +125,16 @@
         }
 
         /* ======================================================================
-           Sticky Editorial Masthead Header
+           Sticky Frosted Glass Header
            ====================================================================== */
         .site-header {
             position: sticky;
             top: 0;
             z-index: 40;
-            background: var(--bg);
-            border-bottom: 2px solid var(--rule);
+            background: var(--glass-header);
+            backdrop-filter: var(--blur);
+            -webkit-backdrop-filter: var(--blur);
+            border-bottom: 1px solid var(--glass-border);
         }
 
         .header-inner {
@@ -141,14 +170,16 @@
         }
 
         .nav-links a {
-            padding: 4px 2px;
-            border-bottom: 1.5px solid transparent;
-            transition: color 0.18s ease, border-color 0.18s ease;
+            padding: 6px 10px;
+            border-radius: 999px;
+            border: 1px solid transparent;
+            transition: color 0.18s ease, background-color 0.18s ease, border-color 0.18s ease;
         }
 
         .nav-links a:hover {
             color: var(--ink);
-            border-bottom-color: var(--rule);
+            background: var(--glass-subtle);
+            border-color: var(--glass-border);
         }
 
         @media (max-width: 560px) {
@@ -167,13 +198,13 @@
             }
 
             .nav-links {
-                gap: 12px;
+                gap: 6px;
                 font-size: 0.7rem;
                 letter-spacing: 0.08em;
             }
 
             .nav-links a {
-                padding: 4px 0;
+                padding: 4px 6px;
             }
         }
 
@@ -184,22 +215,33 @@
             }
 
             .nav-links {
-                gap: 8px;
+                gap: 4px;
                 font-size: 0.66rem;
             }
         }
 
         /* ======================================================================
-           About / Editorial Cover Statement
+           About / Frosted Glass Statement
            ====================================================================== */
         .hero-section {
             padding: 36px 0 32px;
-            border-bottom: 3px double var(--rule);
+            border-bottom: 1px solid var(--rule-subtle);
         }
 
         .hero-glass-panel {
-            background: transparent;
-            padding: 4px 0;
+            background: var(--glass);
+            backdrop-filter: var(--blur);
+            -webkit-backdrop-filter: var(--blur);
+            border: 1px solid var(--glass-border);
+            box-shadow: inset 0 1px 0 var(--glass-highlight), var(--glass-shadow);
+            border-radius: var(--radius);
+            padding: 28px 30px;
+        }
+
+        @media (max-width: 560px) {
+            .hero-glass-panel {
+                padding: 22px 20px;
+            }
         }
 
         .hero-name {
@@ -212,12 +254,12 @@
 
         .hero-bio {
             max-width: 820px;
-            font-family: 'Lora', Georgia, serif;
+            font-family: 'Poppins', sans-serif;
             font-size: clamp(1.02rem, 1.55vw, 1.2rem);
             font-weight: 400;
             color: var(--muted);
             line-height: 1.65;
-            border-left: 3px solid var(--rule);
+            border-left: 2px solid var(--rule);
             padding-left: 18px;
         }
 
@@ -253,7 +295,7 @@
         }
 
         /* ======================================================================
-           Editorial Buttons
+           Minimalist Glass Buttons
            ====================================================================== */
         .btn-primary, .btn-secondary, .btn-whatsapp {
             display: inline-flex;
@@ -261,39 +303,45 @@
             justify-content: center;
             gap: 8px;
             padding: 10px 20px;
-            border-radius: var(--radius);
+            border-radius: 999px;
             font-family: 'Poppins', sans-serif;
             font-size: 0.78rem;
             font-weight: 600;
             text-transform: uppercase;
             letter-spacing: 0.1em;
             cursor: pointer;
-            border: 1.5px solid var(--rule);
-            transition: background-color 0.18s ease, color 0.18s ease, transform 0.15s ease;
+            border: 1px solid var(--glass-border);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            transition: background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease, transform 0.18s ease, box-shadow 0.2s ease;
         }
 
         .btn-primary {
             background: var(--accent);
             color: var(--accent-text);
+            border-color: transparent;
         }
 
         .btn-primary:hover {
-            opacity: 0.88;
+            opacity: 0.9;
+            transform: translateY(-1px);
         }
 
         .btn-secondary {
-            background: var(--paper);
+            background: var(--glass);
             color: var(--ink);
         }
 
         .btn-secondary:hover {
-            background: var(--paper-alt);
+            background: var(--glass-hover);
+            border-color: var(--glass-border-hover);
         }
 
         .btn-whatsapp {
-            background-color: var(--ink);
-            color: var(--bg);
-            border: 1.5px solid var(--ink);
+            background: var(--glass-hover);
+            color: var(--ink);
+            border: 1px solid var(--glass-border-hover);
+            box-shadow: inset 0 1px 0 var(--glass-highlight), 0 6px 18px -6px rgba(15, 23, 42, 0.12);
             padding: 12px 24px;
             text-transform: none;
             font-size: 0.88rem;
@@ -304,10 +352,11 @@
             background-color: var(--whatsapp);
             border-color: var(--whatsapp);
             color: #ffffff;
+            transform: translateY(-1px);
         }
 
         /* ======================================================================
-           Work & Projects Grid (Magazine Feature Spreads)
+           Work & Projects Grid (Minimalist Glass Cards)
            ====================================================================== */
         .portfolio-grid {
             display: grid;
@@ -316,28 +365,32 @@
         }
 
         .project-card {
-            background: var(--paper);
-            border: 1px solid var(--rule-subtle);
-            border-top: 2px solid var(--rule);
+            background: var(--glass);
+            backdrop-filter: var(--blur);
+            -webkit-backdrop-filter: var(--blur);
+            border: 1px solid var(--glass-border);
+            box-shadow: inset 0 1px 0 var(--glass-highlight), var(--glass-shadow);
             border-radius: var(--radius);
             overflow: hidden;
             cursor: pointer;
-            transition: border-color 0.2s ease, transform 0.2s ease;
+            transition: background-color 0.22s ease, border-color 0.22s ease, transform 0.22s ease, box-shadow 0.22s ease;
             display: flex;
             flex-direction: column;
         }
 
         .project-card:hover {
-            border-color: var(--rule);
-            transform: translateY(-2px);
+            background: var(--glass-hover);
+            border-color: var(--glass-border-hover);
+            box-shadow: inset 0 1px 0 var(--glass-highlight), var(--glass-shadow-hover);
+            transform: translateY(-3px);
         }
 
         .card-thumb-wrap {
             position: relative;
             aspect-ratio: 4 / 3;
-            background: var(--paper-alt);
+            background: var(--glass-subtle);
             overflow: hidden;
-            border-bottom: 1px solid var(--rule-subtle);
+            border-bottom: 1px solid var(--glass-border);
         }
 
         .card-thumb {
@@ -354,14 +407,15 @@
 
         .card-gallery-badge, .card-video-badge {
             position: absolute;
-            bottom: 0;
-            right: 0;
+            bottom: 10px;
+            right: 10px;
             padding: 5px 12px;
-            border-radius: 0;
-            background: var(--paper);
-            border-top: 1px solid var(--rule-subtle);
-            border-left: 1px solid var(--rule-subtle);
-            color: var(--muted);
+            border-radius: 999px;
+            background: rgba(15, 23, 42, 0.45);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.18);
+            color: rgba(255, 255, 255, 0.72);
             font-family: 'Poppins', sans-serif;
             font-size: 0.68rem;
             font-weight: 500;
@@ -371,10 +425,8 @@
 
         .card-video-badge {
             right: auto;
-            left: 0;
-            border-left: none;
-            border-right: 1px solid var(--rule-subtle);
-            color: var(--ink);
+            left: 10px;
+            color: rgba(255, 255, 255, 0.92);
         }
 
         .card-body {
@@ -412,7 +464,7 @@
         }
 
         .card-location-year {
-            font-family: 'Lora', Georgia, serif;
+            font-family: 'Poppins', sans-serif;
             font-style: italic;
             font-size: 0.84rem;
             color: var(--muted);
@@ -420,7 +472,7 @@
 
         .card-desc {
             margin-top: 4px;
-            font-family: 'Lora', Georgia, serif;
+            font-family: 'Poppins', sans-serif;
             font-size: 0.88rem;
             line-height: 1.6;
             color: var(--muted);
@@ -433,13 +485,16 @@
         .empty-state {
             text-align: center;
             padding: 40px 20px;
-            background: var(--paper);
-            border: 1px solid var(--rule-subtle);
+            border-radius: var(--radius);
+            background: var(--glass);
+            backdrop-filter: var(--blur);
+            -webkit-backdrop-filter: var(--blur);
+            border: 1px solid var(--glass-border);
             color: var(--muted);
         }
 
         /* ======================================================================
-           Practice & Approach (Editorial Columns)
+           Practice & Approach (Frosted Glass Columns)
            ====================================================================== */
         .practice-grid {
             display: grid;
@@ -448,11 +503,19 @@
         }
 
         .practice-card {
-            padding: 20px 22px;
+            padding: 22px 24px;
             border-radius: var(--radius);
-            background: var(--paper);
-            border: 1px solid var(--rule-subtle);
-            border-top: 2px solid var(--rule);
+            background: var(--glass);
+            backdrop-filter: var(--blur);
+            -webkit-backdrop-filter: var(--blur);
+            border: 1px solid var(--glass-border);
+            box-shadow: inset 0 1px 0 var(--glass-highlight), var(--glass-shadow);
+            transition: background-color 0.2s ease, border-color 0.2s ease;
+        }
+
+        .practice-card:hover {
+            background: var(--glass-hover);
+            border-color: var(--glass-border-hover);
         }
 
         .practice-card h3 {
@@ -463,14 +526,14 @@
         }
 
         .practice-card p {
-            font-family: 'Lora', Georgia, serif;
+            font-family: 'Poppins', sans-serif;
             font-size: 0.9rem;
             color: var(--muted);
             line-height: 1.6;
         }
 
         /* ======================================================================
-           Commissions & Bookings (Magazine Colophon / Inquiry Box)
+           Commissions & Bookings (Frosted Glass Inquiry Container)
            ====================================================================== */
         .bookings-layout {
             display: flex;
@@ -479,9 +542,11 @@
             gap: 16px;
             padding: 26px 28px;
             border-radius: var(--radius);
-            background: var(--paper);
-            border: 1px solid var(--rule);
-            box-shadow: 5px 5px 0 var(--rule-subtle);
+            background: var(--glass);
+            backdrop-filter: var(--blur);
+            -webkit-backdrop-filter: var(--blur);
+            border: 1px solid var(--glass-border);
+            box-shadow: inset 0 1px 0 var(--glass-highlight), var(--glass-shadow);
         }
 
         @media (max-width: 560px) {
@@ -492,18 +557,21 @@
 
         .bookings-prompt {
             max-width: 640px;
-            font-family: 'Lora', Georgia, serif;
+            font-family: 'Poppins', sans-serif;
             font-size: 1rem;
             color: var(--ink);
             line-height: 1.65;
         }
 
         /* ======================================================================
-           Footer (Editorial Colophon Rule)
+           Footer (Minimalist Frosted Footer)
            ====================================================================== */
         .site-footer {
             padding: 20px 0 28px;
-            border-top: 2px solid var(--rule);
+            border-top: 1px solid var(--glass-border);
+            background: var(--glass-subtle);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
             font-family: 'Poppins', sans-serif;
             font-size: 0.75rem;
             letter-spacing: 0.06em;
@@ -528,13 +596,15 @@
         }
 
         /* ======================================================================
-           Modals (Editorial Lightbox Spread)
+           Modals (Frosted Glass Lightbox)
            ====================================================================== */
         .modal-backdrop {
             position: fixed;
             inset: 0;
             z-index: 60;
-            background: rgba(12, 11, 10, 0.82);
+            background: rgba(9, 12, 18, 0.74);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
             display: flex;
             align-items: center;
             justify-content: center;
@@ -547,9 +617,12 @@
             max-width: 960px;
             max-height: 92vh;
             overflow-y: auto;
-            background: var(--paper);
+            background: var(--glass-hover);
+            backdrop-filter: blur(26px) saturate(165%);
+            -webkit-backdrop-filter: blur(26px) saturate(165%);
             color: var(--ink);
-            border: 1.5px solid var(--rule);
+            border: 1px solid var(--glass-border-hover);
+            box-shadow: inset 0 1px 0 var(--glass-highlight), 0 24px 60px rgba(0, 0, 0, 0.35);
             border-radius: var(--radius);
             padding: 26px;
             position: relative;
@@ -576,21 +649,22 @@
         .modal-close-btn {
             width: 36px;
             height: 36px;
-            border-radius: 0;
-            border: 1px solid var(--rule);
-            background: var(--paper);
+            border-radius: 999px;
+            border: 1px solid var(--glass-border);
+            background: var(--glass);
             color: var(--ink);
             font-size: 0.95rem;
             cursor: pointer;
             display: inline-flex;
             align-items: center;
             justify-content: center;
-            transition: background-color 0.18s ease, color 0.18s ease;
+            transition: background-color 0.18s ease, color 0.18s ease, border-color 0.18s ease;
         }
 
         .modal-close-btn:hover {
             background: var(--ink);
             color: var(--bg);
+            border-color: transparent;
         }
 
         /* Lightbox Viewer & Carousel (Uniform 3:2 Stage Aspect Ratio Across Devices) */
@@ -599,9 +673,9 @@
             width: 100%;
             aspect-ratio: 3 / 2;
             max-height: 62vh;
-            background: #0d0d0c;
-            border: 1px solid var(--rule-subtle);
-            border-radius: 0;
+            background: rgba(10, 12, 16, 0.85);
+            border: 1px solid var(--glass-border);
+            border-radius: var(--radius-sm);
             overflow: hidden;
             display: flex;
             align-items: center;
@@ -633,10 +707,6 @@
                 width: 34px;
                 height: 34px;
             }
-
-            .lb-counter-bar {
-                font-size: 0.72rem;
-            }
         }
 
         .lb-nav-btn {
@@ -645,9 +715,11 @@
             transform: translateY(-50%);
             width: 38px;
             height: 38px;
-            border-radius: 0;
-            border: 1px solid rgba(255, 255, 255, 0.35);
-            background: rgba(17, 17, 17, 0.62);
+            border-radius: 999px;
+            border: 1px solid rgba(255, 255, 255, 0.25);
+            background: rgba(15, 23, 42, 0.45);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
             color: rgba(255, 255, 255, 0.94);
             font-size: 1.15rem;
             cursor: pointer;
@@ -655,45 +727,33 @@
             align-items: center;
             justify-content: center;
             transition: background 0.18s ease, opacity 0.18s ease;
-            opacity: 0.85;
+            opacity: 0.88;
         }
 
         .lb-nav-btn:hover {
-            background: #111111;
+            background: rgba(15, 23, 42, 0.82);
             opacity: 1;
         }
 
         .lb-nav-prev { left: 10px; }
         .lb-nav-next { right: 10px; }
 
-        .lb-counter-bar {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            margin-top: 10px;
-            font-family: 'Poppins', sans-serif;
-            font-size: 0.74rem;
-            letter-spacing: 0.08em;
-            text-transform: uppercase;
-            color: var(--muted);
-        }
-
         .lb-carousel-bar {
             display: flex;
             gap: 8px;
             overflow-x: auto;
-            padding: 10px 2px 4px;
+            padding: 8px 2px 2px;
             scrollbar-width: thin;
         }
 
         .lb-thumb-btn {
             flex: 0 0 64px;
             height: 46px;
-            border-radius: 0;
+            border-radius: 8px;
             overflow: hidden;
             border: 2px solid transparent;
             padding: 0;
-            background: var(--paper-alt);
+            background: var(--glass-subtle);
             cursor: pointer;
             opacity: 0.52;
             transition: opacity 0.18s ease, border-color 0.18s ease;
@@ -705,7 +765,7 @@
 
         .lb-thumb-btn.active {
             opacity: 1;
-            border-color: var(--rule);
+            border-color: var(--ink);
         }
 
         .lb-thumb-btn img {
@@ -730,11 +790,10 @@
         }
 
         .lb-specs {
-            background: var(--paper-alt);
-            border: 1px solid var(--rule-subtle);
-            border-top: 2px solid var(--rule);
+            background: var(--glass-subtle);
+            border: 1px solid var(--glass-border);
             padding: 16px;
-            border-radius: 0;
+            border-radius: var(--radius-sm);
             font-family: 'Poppins', sans-serif;
             font-size: 0.78rem;
             display: flex;
@@ -874,7 +933,7 @@
                 <div>
                     <div id="lb-category" style="font-family: 'Poppins', sans-serif; font-size: 0.7rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.12em; color: var(--editorial-red);"></div>
                     <h3 id="lb-title" style="font-size: 1.35rem; font-weight: 700; margin-top: 2px;"></h3>
-                    <div id="lb-location" style="font-family: 'Lora', Georgia, serif; font-style: italic; font-size: 0.88rem; color: var(--muted); margin-top: 2px;"></div>
+                    <div id="lb-location" style="font-family: 'Poppins', sans-serif; font-style: italic; font-size: 0.88rem; color: var(--muted); margin-top: 2px;"></div>
                 </div>
                 <button id="lb-close" class="modal-close-btn" type="button" aria-label="Close modal">&#10005;</button>
             </div>
@@ -884,10 +943,6 @@
                 <img id="lb-main-img" class="lb-main-img" src="" alt="">
                 <button id="lb-prev" class="lb-nav-btn lb-nav-prev" type="button" aria-label="Previous image">&#8249;</button>
                 <button id="lb-next" class="lb-nav-btn lb-nav-next" type="button" aria-label="Next image">&#8250;</button>
-            </div>
-
-            <div class="lb-counter-bar">
-                <span id="lb-slide-counter">1 / 1</span>
             </div>
 
             <!-- Thumbnail Strip -->
@@ -999,7 +1054,6 @@
         const lbCarouselBar = document.getElementById('lb-carousel-bar');
         const lbPrevBtn = document.getElementById('lb-prev');
         const lbNextBtn = document.getElementById('lb-next');
-        const lbSlideCounter = document.getElementById('lb-slide-counter');
 
         // Safely encode relative image paths for GitHub Pages static hosting
         function resolveAssetUrl(path) {
@@ -1214,7 +1268,6 @@
             activeLightboxSlide = ((index % imgs.length) + imgs.length) % imgs.length;
             lbMainImg.src = resolveAssetUrl(imgs[activeLightboxSlide]);
             lbMainImg.alt = `${activeLightboxProject.title} — frame ${activeLightboxSlide + 1}`;
-            lbSlideCounter.textContent = `${activeLightboxSlide + 1} / ${imgs.length}`;
 
             const showArrows = imgs.length > 1;
             lbPrevBtn.classList.toggle('hidden', !showArrows);
