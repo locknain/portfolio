@@ -905,17 +905,33 @@
     </div>
 
     <!-- ======================================================================
-         Application Logic (GitHub Pages Static Deployment)
+         Application Logic (GitHub Repository Auto-Folder Fetcher)
          ====================================================================== -->
     <script>
         /**
-         * Portfolio Projects Configuration for GitHub Pages
+         * GitHub Repository Configuration
+         * --------------------------------------------------------------------
+         * Automatically scans each project's `folder` in `locknain/portfolio`
+         * via the GitHub Contents API so you only need to specify the folder
+         * path (and optional `heroImage` filename) when adding new shoots!
+         */
+        const GITHUB_CONFIG = {
+            owner: 'locknain',
+            repo: 'portfolio',
+            branch: 'main'
+        };
+
+        const IMAGE_EXTENSIONS = /\.(jpe?g|png|webp|gif|avif)$/i;
+        const MAX_GALLERY_ITEMS = 10;
+
+        /**
+         * Portfolio Projects
          * --------------------------------------------------------------------
          * - Only the 4 most recent projects are displayed on the page.
-         * - Keep paths relative (no leading slash) so they resolve cleanly
-         *   both on custom root domains and GitHub Pages subpaths
-         *   (e.g., https://username.github.io/repo-name/).
-         * - Ensure folder & file names match exact case on GitHub (Linux).
+         * - Specify `folder` (exact path inside locknain/portfolio) and
+         *   optional `heroImage` (filename inside that folder).
+         * - Optional `fallbackImages` ensures instant rendering even if offline
+         *   or if GitHub API rate limits are reached.
          */
         const PROJECTS = [
             {
@@ -926,8 +942,9 @@
                 year: '2026',
                 videoUrl: '',
                 description: 'Official corporate event documentation and executive coverage for the GBS Global Summit 2026 hosted at Kuala Lumpur Golf & Country Club (KLGCC).',
-                heroIndex: 0, // Uses Images/Corporate/2026/GBS Global Summit 2026/gbsportfolio-2.jpg
-                images: [
+                folder: 'Images/Corporate/2026/GBS Global Summit 2026',
+                heroImage: 'gbsportfolio-2.jpg',
+                fallbackImages: [
                     'Images/Corporate/2026/GBS Global Summit 2026/gbsportfolio-2.jpg',
                     'Images/Corporate/2026/GBS Global Summit 2026/gbsportfolio.jpg',
                     'Images/Corporate/2026/GBS Global Summit 2026/gbsportfolio-3.jpg',
@@ -948,8 +965,9 @@
                 year: '2026',
                 videoUrl: '',
                 description: 'JLG Sustainability Department brought together 35 volunteers at Cerebral Palsy Johor to help create a cleaner, more welcoming environment and strengthen community connections.',
-                heroIndex: 0, // Uses Images/Corporate/2026/Cerebral Palsy/cp.jpg
-                images: [
+                folder: 'Images/Corporate/2026/Cerebral Palsy',
+                heroImage: 'cp.jpg',
+                fallbackImages: [
                     'Images/Corporate/2026/Cerebral Palsy/cp.jpg',
                     'Images/Corporate/2026/Cerebral Palsy/cp-2.jpg',
                     'Images/Corporate/2026/Cerebral Palsy/cp-3.jpg',
@@ -963,8 +981,6 @@
                 ]
             }
         ];
-
-        const MAX_GALLERY_ITEMS = 10;
 
         let activeLightboxProject = null;
         let activeLightboxSlide = 0;
@@ -994,9 +1010,111 @@
                 .replace(/"/g, '&quot;');
         }
 
+        // Natural alphanumeric filename sort (e.g., img-1.jpg, img-2.jpg ... img-10.jpg)
+        function naturalCompare(a, b) {
+            return a.localeCompare(b, undefined, { numeric: true, sensitivity: 'base' });
+        }
+
+        // Order images so `heroImage` is placed first, capped at MAX_GALLERY_ITEMS
+        function arrangeGalleryImages(paths, heroImageName) {
+            if (!Array.isArray(paths) || paths.length === 0) return [];
+            const uniquePaths = [...new Set(paths)];
+            if (heroImageName) {
+                const targetLower = heroImageName.trim().toLowerCase();
+                const heroIdx = uniquePaths.findIndex(p => {
+                    const fileName = p.split('/').pop().toLowerCase();
+                    return fileName === targetLower;
+                });
+                if (heroIdx > 0) {
+                    const [heroPath] = uniquePaths.splice(heroIdx, 1);
+                    uniquePaths.unshift(heroPath);
+                }
+            }
+            return uniquePaths.slice(0, MAX_GALLERY_ITEMS);
+        }
+
+        // Fetch all image files inside a GitHub repo folder via GitHub Contents API
+        async function fetchFolderImagesFromGitHub(folderPath) {
+            const cleanFolder = String(folderPath || '').replace(/^\/+|\/+$/g, '');
+            if (!cleanFolder) return [];
+
+            const cacheKey = `gh_folder_${GITHUB_CONFIG.owner}_${GITHUB_CONFIG.repo}_${cleanFolder}`;
+            try {
+                const cached = sessionStorage.getItem(cacheKey);
+                if (cached) {
+                    const parsed = JSON.parse(cached);
+                    if (Array.isArray(parsed) && parsed.length > 0) return parsed;
+                }
+            } catch (_) {}
+
+            const encodedFolder = cleanFolder.split('/').map(s => encodeURIComponent(s)).join('/');
+            const apiUrl = `https://api.github.com/repos/${GITHUB_CONFIG.owner}/${GITHUB_CONFIG.repo}/contents/${encodedFolder}?ref=${encodeURIComponent(GITHUB_CONFIG.branch)}`;
+
+            const response = await fetch(apiUrl, {
+                headers: { 'Accept': 'application/vnd.github.v3+json' }
+            });
+
+            if (!response.ok) {
+                throw new Error(`GitHub API responded with ${response.status}`);
+            }
+
+            const items = await response.json();
+            if (!Array.isArray(items)) return [];
+
+            const imagePaths = items
+                .filter(item => item && item.type === 'file' && IMAGE_EXTENSIONS.test(item.name))
+                .map(item => item.path)
+                .sort(naturalCompare);
+
+            try {
+                if (imagePaths.length > 0) {
+                    sessionStorage.setItem(cacheKey, JSON.stringify(imagePaths));
+                }
+            } catch (_) {}
+
+            return imagePaths;
+        }
+
+        // Resolve each project's images from its folder (with fallback support)
+        async function hydrateProjectImages() {
+            const recentProjects = PROJECTS.slice(0, 4);
+
+            await Promise.all(recentProjects.map(async (project) => {
+                // Set immediate fallback images first so UI renders without delay
+                if (Array.isArray(project.images) && project.images.length > 0) {
+                    project._resolvedImages = arrangeGalleryImages(project.images, project.heroImage);
+                } else if (Array.isArray(project.fallbackImages) && project.fallbackImages.length > 0) {
+                    project._resolvedImages = arrangeGalleryImages(project.fallbackImages, project.heroImage);
+                } else if (project.folder && project.heroImage) {
+                    const cleanFolder = project.folder.replace(/^\/+|\/+$/g, '');
+                    project._resolvedImages = [`${cleanFolder}/${project.heroImage}`];
+                } else {
+                    project._resolvedImages = [];
+                }
+
+                // Fetch full folder list from GitHub repo
+                if (project.folder) {
+                    try {
+                        const fetchedPaths = await fetchFolderImagesFromGitHub(project.folder);
+                        if (fetchedPaths.length > 0) {
+                            project._resolvedImages = arrangeGalleryImages(fetchedPaths, project.heroImage);
+                        }
+                    } catch (err) {
+                        console.warn(`Using fallback images for "${project.title}":`, err.message);
+                    }
+                }
+            }));
+        }
+
         function getProjectImages(project) {
+            if (Array.isArray(project._resolvedImages) && project._resolvedImages.length > 0) {
+                return project._resolvedImages.slice(0, MAX_GALLERY_ITEMS);
+            }
             if (Array.isArray(project.images) && project.images.length > 0) {
-                return project.images.slice(0, MAX_GALLERY_ITEMS);
+                return arrangeGalleryImages(project.images, project.heroImage);
+            }
+            if (Array.isArray(project.fallbackImages) && project.fallbackImages.length > 0) {
+                return arrangeGalleryImages(project.fallbackImages, project.heroImage);
             }
             return project.image ? [project.image] : [];
         }
@@ -1018,7 +1136,6 @@
             }
 
             portfolioGrid.innerHTML = recentProjects.map((project, index) => {
-                const imgs = getProjectImages(project);
                 const heroImg = resolveAssetUrl(getHeroImage(project));
                 const isVideo = project.category === 'Montage' || Boolean(project.videoUrl);
 
@@ -1155,8 +1272,17 @@
         });
 
         // Initialize
-        document.getElementById('current-year').textContent = new Date().getFullYear();
-        renderPortfolio();
+        async function initPortfolio() {
+            document.getElementById('current-year').textContent = new Date().getFullYear();
+            await hydrateProjectImages();
+            renderPortfolio();
+            // Refresh lightbox if user opened a card before GitHub API finished
+            if (activeLightboxProject) {
+                renderLightboxSlide(activeLightboxSlide);
+            }
+        }
+
+        initPortfolio();
     </script>
 </body>
 </html>
